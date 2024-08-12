@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openbox_menu>
+
+<menu id="hom" label="thepad">
+	<item label="~ Sweet ~" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/folder-linux.svg">
+		<action name="Execute">
+			<command>thunar</command>
+		</action>
+	</item>
+	<item label="Home Bin" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/folder-script.svg">
+		<action name="Execute">
+			<command>thunar /home/thefrog/bin</command>
+		</action>
+	</item>
+	<item label="Downloads" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/folder-download.svg">
+		<action name="Execute">
+			<command>thunar /home/thefrog/Downloads</command>
+		</action>
+	</item>
+	<item label="Pictures" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/folder-picture.svg">
+		<action name="Execute">
+			<command>thunar /home/thefrog/Pictures</command>
+		</action>
+	</item>
+	<item label="tmp" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/folder-temp.svg">
+		<action name="Execute">
+			<command>thunar /home/thefrog/tmp</command>
+		</action>
+	</item>
+</menu>
+<menu id="client-list-menu" label="= Newly created label ="/>
+<menu id="uf1" label="Shared Folders">
+	<item label="Applications" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/folder-apps.svg">
+		<action name="Execute">
+			<command>thunar /usr/share/applications</command>
+		</action>
+	</item>
+	<item label="Icons" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/folder-icons.svg">
+		<action name="Execute">
+			<command>thunar /usr/share/icons</command>
+		</action>
+	</item>
+	<item label="Themes" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/folder-themes.svg">
+		<action name="Execute">
+			<command>thunar /usr/share/themes</command>
+		</action>
+	</item>
+</menu>
+<menu id="aa" label="Accessories">
+	<item label="Catfish File Search" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/catfish.svg">
+		<action name="Execute">
+			<command>catfish</command>
+		</action>
+	</item>
+	<item label="Character Map" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/charmap.svg">
+		<action name="Execute">
+			<command>gucharmap</command>
+		</action>
+	</item>
+	<item label="fslint" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/fslint_icon.svg">
+		<action name="Execute">
+			<command>fslint-gui</command>
+		</action>
+	</item>
+	<item label="Nitrogen" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/nitrogen.svg">
+		<action name="Execute">
+			<command>nitrogen</command>
+		</action>
+	</item>
+	<item label="Plank" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/plank.svg">
+		<action name="Execute">
+			<command>plank</command>
+		</action>
+	</item>
+	<item label="Security Camera" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/devices/48/media-optical-recordable.svg">
+		<action name="Execute">
+			<command>webcamoid</command>
+		</action>
+	</item>
+	<item label="Xarchiver" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/xarchiver.svg">
+		<action name="Execute">
+			<command>xarchiver</command>
+		</action>
+	</item>
+</menu>
+<menu id="te" label="Editors">
+	<item label="Geany" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/geany.svg">
+		<action name="Execute">
+			<command>geany</command>
+		</action>
+	</item>
+	<item label="Micro Text Editor" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/notepad.svg">
+		<action name="Execute">
+			<command>alacritty -e &quot;micro&quot;</command>
+		</action>
+	</item>
+	<item label="Xed Text Editor" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/xed.svg">
+		<action name="Execute">
+			<command>xed</command>
+		</action>
+	</item>
+</menu>
+<menu id="pix" label="Graphix">
+	<item label="Gcolor3" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/gcolor3.svg">
+		<action name="Execute">
+			<command>gcolor3</command>
+		</action>
+	</item>
+	<item label="Gimp" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/gimp.svg">
+		<action name="Execute">
+			<command>gimp</command>
+		</action>
+	</item>
+	<item label="Viewnior" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/viewnior.svg">
+		<action name="Execute">
+			<command>viewnior</command>
+		</action>
+	</item>
+</menu>
+<menu id="iinet" label="Internet">
+	<item label="Brave" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/brave.svg">
+		<action name="Execute">
+			<command>brave</command>
+		</action>
+	</item>
+	<item label="Firefox" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/firefox.svg">
+		<action name="Execute">
+			<command>firefox</command>
+		</action>
+	</item>
+	<item label="Freetube" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/youtube.svg">
+		<action name="Execute">
+			<command>freetube</command>
+		</action>
+	</item>
+</menu>
+<menu id="sia" label="Multimedia">
+	<item label="Audio Sound" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/preferences-sound.svg">
+		<action name="Execute">
+			<command>pavucontrol</command>
+		</action>
+	</item>
+	<item label="Music Brainz Picard" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/picard.svg">
+		<action name="Execute">
+			<command>picard</command>
+		</action>
+	</item>
+	<item label="Simple Screen Recorder" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/simplescreenrecorder.svg">
+		<action name="Execute">
+			<command>simplescreenrecorder</command>
+		</action>
+	</item>
+	<item label="Subtitle Editor" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/subtitleeditor.svg">
+		<action name="Execute">
+			<command>subtitleeditor</command>
+		</action>
+	</item>
+	<item label="VlC Media Player" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/vlc.svg">
+		<action name="Execute">
+			<command>vlc</command>
+		</action>
+	</item>
+</menu>
+<menu id="lo" label="Office">
+	<item label="Galculator" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/galculator.svg">
+		<action name="Execute">
+			<command>galculator</command>
+		</action>
+	</item>
+	<item label="Libre Office Base" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/libreoffice-base.svg">
+		<action name="Execute">
+			<command>libreoffice --base</command>
+		</action>
+	</item>
+	<item label="Libre Office Calc" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/libreoffice-calc.svg">
+		<action name="Execute">
+			<command>libreoffice --calc</command>
+		</action>
+	</item>
+	<item label="Libre Office Draw" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/libreoffice-draw.svg">
+		<action name="Execute">
+			<command>libreoffice --draw</command>
+		</action>
+	</item>
+	<item label="Libre Office Impress" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/libreoffice-impress.svg">
+		<action name="Execute">
+			<command>libreoffice --impress</command>
+		</action>
+	</item>
+	<item label="Libre Office Math" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/libreoffice-math.svg">
+		<action name="Execute">
+			<command>libreoffice --math</command>
+		</action>
+	</item>
+	<item label="Libre Office Writer" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/libreoffice-writer.svg">
+		<action name="Execute">
+			<command>libreoffice  --writer</command>
+		</action>
+	</item>
+	<item label="Osmo personal organizer" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/osmo.svg">
+		<action name="Execute">
+			<command>osmo</command>
+		</action>
+	</item>
+	<item label="QPDFView" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/qpdfview.svg">
+		<action name="Execute">
+			<command>qpdfview</command>
+		</action>
+	</item>
+</menu>
+<menu id="util" label="Utilties">
+	<item label="Alacritty" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/Terminal.svg">
+		<action name="Execute">
+			<command>alacritty</command>
+		</action>
+	</item>
+	<item label="Arandr" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/preferences-desktop-display.svg">
+		<action name="Execute">
+			<command>arandr</command>
+		</action>
+	</item>
+	<item label="Disk Analyzer" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/baobab.svg">
+		<action name="Execute">
+			<command>baobab</command>
+		</action>
+	</item>
+	<item label="EndeavourOS Log Tool" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/accessories-ebook-reader.svg">
+		<action name="Execute">
+			<command>eos-log-tool</command>
+		</action>
+	</item>
+	<item label="Btop" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/htop.svg">
+		<action name="Execute">
+			<command>alacritty -e  &quot;btop&quot;</command>
+		</action>
+	</item>
+	<item label="Power Manager" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/power.svg">
+		<action name="Execute">
+			<command>xfce4-power-manager-settings</command>
+		</action>
+	</item>
+	<item label="System Information" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/info.svg">
+		<action name="Execute">
+			<command>hardinfo</command>
+		</action>
+	</item>
+</menu>
+<menu id="rap" label="Root">
+	<item label="Gparted" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/gparted.svg">
+		<action name="Execute">
+			<command>gparted</command>
+		</action>
+	</item>
+	<item label="PhotoRec">
+		<action name="Execute">
+			<command>/home/thefrog/bin/testdisk-7.2-WIP/xfce4-terminal -e &quot;sudo photorec_static&quot;</command>
+		</action>
+	</item>
+	<item label="System Information" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/info.svg">
+		<action name="Execute">
+			<command>gksu hardinfo</command>
+		</action>
+	</item>
+	<item label="Test Disk">
+		<action name="Execute">
+			<command>xfce4-terminal -e &quot;sudo testdisk&quot;</command>
+		</action>
+	</item>
+	<item label="Thunar" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/thunar.svg">
+		<action name="Execute">
+			<command>gksu thunar</command>
+		</action>
+	</item>
+</menu>
+<menu id="miy" label="Make it yours">
+	<menu id="miyob" label="Open Box" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/openbox.svg">
+		<separator/>
+		<item label="Gui Menu Editor" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/alacarte.svg">
+			<action name="Execute">
+				<command>kickshaw</command>
+			</action>
+		</item>
+		<item label="Open Box Configuration" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/obconf.svg">
+			<action name="Execute">
+				<command>obconf</command>
+			</action>
+		</item>
+		<item label="Obkey" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/preferences-desktop-keyboard.svg">
+			<action name="Execute">
+				<command>obkey</command>
+			</action>
+		</item>
+		<separator/>
+		<item label="Edit autostart" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/mimetypes/48/application-script-blank.svg">
+			<action name="Execute">
+				<command>xed /home/thefrog/.config/openbox/autostart</command>
+			</action>
+		</item>
+		<item label="Edit menu.xml" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/mimetypes/48/application-xml.svg">
+			<action name="Execute">
+				<command>xed /home/thefrog/.config/openbox/menu.xml</command>
+			</action>
+		</item>
+		<item label="Edit rc.xml" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/mimetypes/48/application-xml.svg">
+			<action name="Execute">
+				<command>xed /home/thefrog/.config/openbox/rc.xml</command>
+			</action>
+		</item>
+		<separator/>
+		<item label="Reconfigure" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/restart_highlight.svg">
+			<action name="Reconfigure"/>
+		</item>
+	</menu>
+	<separator/>
+	<item label="LXappearance" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/preferences-desktop-theme.svg">
+		<action name="Execute">
+			<command>lxappearance</command>
+		</action>
+	</item>
+	<item label="Nitrogen" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/nitrogen.svg">
+		<action name="Execute">
+			<command>nitrogen</command>
+		</action>
+	</item>
+	<item label="Settings Manager" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/settings.svg">
+		<action name="Execute">
+			<command>xfce4-settings-manager</command>
+		</action>
+	</item>
+</menu>
+<menu id="leave" label="Xit">
+	<item label="Log Out" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/logout_highlight.svg">
+		<action name="Execute">
+			<command>openbox --exit</command>
+		</action>
+	</item>
+	<item label="Reboot" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/restart_highlight.svg">
+		<action name="Execute">
+			<command>systemctl reboot</command>
+		</action>
+	</item>
+	<item label="Shutdown" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/shutdown_highlight.svg">
+		<action name="Execute">
+			<command>systemctl poweroff</command>
+		</action>
+	</item>
+</menu>
+
+<menu id="root-menu" label="Openbox 3">
+	<separator label="thepad"/>
+	<menu id="hom" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/user-home.svg"/>
+	<menu id="client-list-menu" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/workspace-switcher.svg"/>
+	<menu id="uf1" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/places/48/folder-publicshare.svg"/>
+	<separator/>
+	<menu id="aa" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/categories/48/accessories-system-cleaner.svg"/>
+	<menu id="te" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/accessories-text-editor.svg"/>
+	<menu id="pix" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/accessories-image-viewer.svg"/>
+	<menu id="iinet" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/www-browser.svg"/>
+	<menu id="sia" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/accessories-media-converter.svg"/>
+	<menu id="lo" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/accessories-notes.svg"/>
+	<menu id="util" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/accessories-system-cleaner.svg"/>
+	<separator/>
+	<menu id="rap" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/root.svg"/>
+	<separator/>
+	<menu id="miy" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/preferences-theme.svg"/>
+	<separator/>
+	<menu id="leave" icon="/home/thefrog/.local/share/icons/Material-Black-Plum-Suru/apps/48/shutdownscheduler.svg"/>
+</menu>
+
+</openbox_menu>
