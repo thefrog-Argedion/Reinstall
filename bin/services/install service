@@ -1,0 +1,6 @@
+sudo cp ./userclean.service /etc/systemd/system
+sudo cp clean-cacheplus.sh /usr/bin
+sudo chmod +x /usr/bin/clean-cacheplus.sh
+sudo systemctl daemon-reload
+sudo systemctl enable userclean.service
+
