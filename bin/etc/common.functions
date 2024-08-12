@@ -1,0 +1,436 @@
+#!/bin/bash
+# Created by thefrog
+
+#################################################################################################################################
+
+function is_Drive_Mounted
+{
+#/simple function to check the status of a mount used in various scripts
+	if grep -qs ${Mount_2_Check} /proc/mounts; then
+        DRIVE_MOUNTED=1 #True
+	fi
+
+}
+
+#################################################################################################################################
+
+function get_DEVICE_STATUS
+{
+    #/ used for androids adb for a few droid pull / push scripts i have
+#coded by thefrog
+#simple function to determine if the device is "Online"
+#possible values are: offline bootloader device unauthorized null
+current_state=`adb get-state | tr -d '\r\n\t /\\\' | sed '/^$/d'`
+DEVICE_STATUS=$current_state
+
+}
+
+
+#################################################################################################################################
+
+function chk_NET_STATUS
+{
+#/ check internet connection 
+MY_IP=`ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
+#<----[ the below is really only needed for my laptop sofar. Not sure but the desktop will show the ip
+#<----[ no matter which is connected however on the laptop it shows enp3so instead of the ip address if the
+#<----[ wire is connected and wifi is off
+if [[ $MY_IP = "enp3s0" ]] ; then
+	MY_IP=`ip addr | grep 'state UP' -A3 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
+fi
+target=$MY_IP
+icount=$( ping -c 1 $target | grep icmp* | wc -l ) > /dev/null 2>&1
+if [[ $icount -eq 0 ]] ; then
+    #inform user that net was not found
+    NETWORK_STATUS="UNAVAILABLE"
+else
+    NETWORK_STATUS=$MY_IP
+fi
+
+}
+
+#################################################################################################################################
+
+function is_User_Root
+{
+
+#/check run as root exit if not
+if [[ $EUID -ne 0 ]]; then
+   USER_IS_ROOT=0
+
+fi
+
+}
+
+function get_DRIVE_SIZE
+{
+
+   DRIVE_SPECS=`df -h -x aufs -x tmpfs -x overlay ${DRIVE_2_QUERY} --total 2 | grep "total" | awk '{print $2, $3, $4}'` > /dev/null 2>&1
+   #DRIVE_SPECS=`df -h -x aufs -x tmpfs -x overlay ${DRIVE_2_QUERY} | grep "/dev/" | awk '{print $1, $2, $3, $4}'`
+}
+
+function show_DRIVE_INFO
+{
+ ALL_MOUNTS=`df -h -x aufs -x tmpfs -x overlay ${DRIVE_2_QUERY} --output='source','fstype','size','used','avail','pcent','target' | grep "/dev/"`
+
+    DEVICE_SOURCE=$(awk '{print $1}' <<< "${ALL_MOUNTS}")
+    FILE_SYSTEM=$(awk '{print $2}' <<< "${ALL_MOUNTS}")
+    DEVICE_SIZE=$(awk '{print $3}' <<< "${ALL_MOUNTS}")
+    DEVICE_USED=$(awk '{print $4}' <<< "${ALL_MOUNTS}")
+    DEVICE_AVAILABLE=$(awk '{print $5}' <<< "${ALL_MOUNTS}")
+    DEVICE_PERCENTAGE=$(awk '{print $6}' <<< "${ALL_MOUNTS}")
+    DEVICE_MOUNTPOINT=$(awk '{print $7}' <<< "${ALL_MOUNTS}")
+    DEVICE_SIZES="${DEVICE_SIZE} | ${DEVICE_USED} | ${DEVICE_AVAILABLE} | ${DEVICE_PERCENTAGE}"
+}
+
+
+function get_PUBLIC_IP
+{
+
+public_ip=
+ public_ip="$(drill myip.opendns.com @resolver1.opendns.com | awk '/^myip\./ && $3 == "IN" {print $5}')"
+
+}
+
+function get_DIRECTORY_INFO
+{
+    ALL_PARENTS=`ls ${DRIVE_2_QUERY}`
+    cd ${DRIVE_2_QUERY}
+    PARENTS=$(awk '{print $1}' <<< "${ALL_PARENTS}")
+   # echo ${PARENTS}
+    PARENTS_SIZE=`du -hs ${PARENTS} | awk '{print $1}'`
+    PARENT_INFO="${PARENTS}"
+    PARENT_SIZE="${PARENTS_SIZE}"
+    NUMBER_OF_PARENTS=`echo -n ${PARENTS} | wc -w`
+    NUMBER_OF_CHILDREN=`echo  */*/ | wc -w`
+    P_Size="${DEVICE_PERCENTAGE}"
+
+}
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# Disk Usage Detection - Begin
+# updated july 18 2022 to show MGTP
+function get_ALL_DISK_SIZE ()
+{
+	DRIVE_TOTAL=`inxi -D  | grep "Storage" | awk {'print $4, "",$7, "", $9'}`
+}
+
+# Disk Usage Detection - End
+# Copyright (c) 2010-2019 Brett Bohnenkamper <kittykatt@kittykatt.us>
+
+# GPU Detection - Begin (EXPERIMENTAL!)
+detect_GRAPHIX_CARD ()
+{
+
+		if [[ -n "$(PATH="/opt/bin:$PATH" type -p nvidia-smi)" ]]; then
+			gpu=$($(PATH="/opt/bin:$PATH" type -p nvidia-smi | cut -f1) -q | awk -F':' '/Product Name/ {gsub(/: /,":"); print $2}' | sed ':a;N;$!ba;s/\n/, /g')
+		elif [[ -n "$(PATH="/usr/sbin:$PATH" type -p glxinfo)" && -z "${gpu}" ]]; then
+			gpu_info=$($(PATH="/usr/sbin:$PATH" type -p glxinfo | cut -f1) 2>/dev/null)
+			gpu=$(grep "OpenGL renderer string" <<< "${gpu_info}" | cut -d ':' -f2 | sed -n -e '1h;2,$H;${g;s/\n/, /g' -e 'p' -e '}')
+			gpu="${gpu:1}"
+			gpu_info=$(grep "OpenGL vendor string" <<< "${gpu_info}")
+		elif [[ -n "$(PATH="/usr/sbin:$PATH" type -p lspci)" && -z "$gpu" ]]; then
+			gpu_info=$($(PATH="/usr/bin:$PATH" type -p lspci | cut -f1) 2> /dev/null | grep VGA)
+			gpu=$(grep -oE '\[.*\]' <<< "${gpu_info}" | sed 's/\[//;s/\]//' | sed -n -e '1h;2,$H;${g;s/\n/, /g' -e 'p' -e '}')
+		fi
+
+	if [ -n "$gpu" ];then
+		if grep -q -i 'nvidia' <<< "${gpu_info}"; then
+			gpu_info="NVidia "
+		elif grep -q -i 'intel' <<< "${gpu_info}"; then
+			gpu_info="Intel "
+		elif grep -q -i 'amd' <<< "${gpu_info}"; then
+			gpu_info="AMD "
+		elif grep -q -i 'ati' <<< "${gpu_info}" || grep -q -i 'radeon' <<< "${gpu_info}"; then
+			gpu_info="ATI "
+		else
+			gpu_info=$(cut -d ':' -f2 <<< "${gpu_info}")
+			gpu_info="${gpu_info:1} "
+		fi
+		gpu="${gpu}"
+	else
+		gpu="Not Found"
+	fi
+
+	GPU=$gpu
+}
+# GPU Detection - End
+
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#from neofetch COPYWRITE MIT
+
+# Resolution
+
+
+# Display refresh rate next to each monitor
+# Default: 'off'
+# Values:  'on', 'off'
+# Flag:    --refresh_rate
+# Supports: Doesn't work on Windows.
+#
+# Example:
+# on:  '1920x1080 @ 60Hz'
+# off: '1920x1080'
+refresh_rate="off"
+
+# Resolution Detection - Begin
+detectres () {
+	xResolution="No X Server"
+	if [[ ${distro} == "Mac OS X" ]]; then
+		xResolution=$(system_profiler SPDisplaysDataType | awk '/Resolution:/ {print $2"x"$4" "}')
+		if [[ "$(echo "$xResolution" | wc -l)" -ge 1 ]]; then
+			xResolution=$(echo "$xResolution" | tr "\\n" "," | sed 's/\(.*\),/\1/')
+		fi
+	elif [[ "${distro}" == "Cygwin" || "${distro}" == "Msys" ]]; then
+		xResolution=$(wmic path Win32_VideoController get CurrentHorizontalResolution,CurrentVerticalResolution | awk 'NR==2 {print $1"x"$2}')
+	elif [[ "${distro}" == "Haiku" ]]; then
+		xResolution="$(screenmode | grep Resolution | awk '{gsub(/,/,""); print $2"x"$3}')"
+	elif [[ -n ${DISPLAY} ]]; then
+		if type -p xdpyinfo >/dev/null 2>&1; then
+			xResolution=$(xdpyinfo | awk '/^ +dimensions/ {print $2}')
+		fi
+	fi
+	#verboseOut "Finding current resolution(s)...found as '$xResolution'"
+}
+# Resolution Detection - End
+
+get_res(){
+    if type -p xrandr >/dev/null; then
+
+        resolution="$(xrandr --nograb --current |\
+                      awk -F 'connected |\\+|\\(' \
+                             '/ connected/ && $2 {printf $2 ", "}')"
+        resolution="${resolution/primary }"
+        resolution="${resolution//\*}"
+
+    elif type -p xwininfo >/dev/null; then
+        read -r w h \
+            < <(xwininfo -root | awk -F':' '/Width|Height/ {printf $2}')
+        resolution="${w}x${h}"
+
+    elif type -p xdpyinfo >/dev/null; then
+        resolution="$(xdpyinfo | awk '/dimensions:/ {printf $2}')"
+    fi
+
+    resolution="${resolution%,*}"
+
+   # echo "$resolution"
+}
+
+
+# CPU Detection - Begin
+detectcpu () {
+	local REGEXP="-r"
+	if [ "$distro" == "Mac OS X" ]; then
+		cpu=$(machine)
+		if [[ $cpu == "ppc750" ]]; then
+			cpu="IBM PowerPC G3"
+		elif [[ $cpu == "ppc7400" || $cpu == "ppc7450" ]]; then
+			cpu="IBM PowerPC G4"
+		elif [[ $cpu == "ppc970" ]]; then
+			cpu="IBM PowerPC G5"
+		else
+			cpu=$(sysctl -n machdep.cpu.brand_string)
+		fi
+		REGEXP="-E"
+	elif [ "$OSTYPE" == "gnu" ]; then
+		# no /proc/cpuinfo on GNU/Hurd
+		if uname -m | grep -q 'i.86'; then
+			cpu="Unknown x86"
+		else
+			cpu="Unknown"
+		fi
+	elif [ "$distro" == "FreeBSD" ]; then
+		cpu=$(dmesg | awk -F': ' '/^CPU/ {gsub(/ +/," "); gsub(/\([^\(\)]*\)|CPU /,"", $2); print $2; exit}')
+	elif [ "$distro" == "DragonFlyBSD" ]; then
+		cpu=$(sysctl -n hw.model)
+	elif [ "$distro" == "OpenBSD" ]; then
+		cpu=$(sysctl -n hw.model | sed 's/@.*//')
+	elif [ "$distro" == "Haiku" ]; then
+		cpu=$(sysinfo -cpu | awk -F': ' '/^CPU #0/ {gsub(/ +/," "); gsub(/\([^\(\)]*\)|CPU /,"", $2); print $2; exit}')
+	else
+		cpu=$(awk -F':' '/^model name/ {split($2, A, " @"); print A[1]; exit}' /proc/cpuinfo)
+		cpun=$(grep -c '^processor' /proc/cpuinfo)
+		if [ -z "$cpu" ]; then
+			cpu=$(awk 'BEGIN{FS=":"} /Hardware/ { print $2; exit }' /proc/cpuinfo)
+		fi
+		if [ -z "$cpu" ]; then
+			cpu=$(awk 'BEGIN{FS=":"} /^cpu/ { gsub(/  +/," ",$2); print $2; exit}' /proc/cpuinfo | sed 's/, altivec supported//;s/^ //')
+			if [[ $cpu =~ ^(PPC)*9.+ ]]; then
+				model="IBM PowerPC G5 "
+			elif [[ $cpu =~ 740/750 ]]; then
+				model="IBM PowerPC G3 "
+			elif [[ $cpu =~ ^74.+ ]]; then
+				model="Motorola PowerPC G4 "
+			elif [[ $cpu =~ ^POWER.* ]]; then
+				model="IBM POWER "
+			elif grep -q -i 'BCM2708' /proc/cpuinfo ; then
+				model="Broadcom BCM2835 ARM1176JZF-S"
+			else
+				arch=$(uname -m)
+				if [[ "$arch" == "s390x" || "$arch" == "s390" ]]; then
+					cpu=""
+					args=$(grep 'machine' /proc/cpuinfo | sed 's/^.*://g; s/ //g; s/,/\n/g' | grep '^machine=.*')
+					eval "$args"
+					case "$machine" in
+						# information taken from https://github.com/SUSE/s390-tools/blob/master/cputype
+						2064) model="IBM eServer zSeries 900" ;;
+						2066) model="IBM eServer zSeries 800" ;;
+						2084) model="IBM eServer zSeries 990" ;;
+						2086) model="IBM eServer zSeries 890" ;;
+						2094) model="IBM System z9 Enterprise Class" ;;
+						2096) model="IBM System z9 Business Class" ;;
+						2097) model="IBM System z10 Enterprise Class" ;;
+						2098) model="IBM System z10 Business Class" ;;
+						2817) model="IBM zEnterprise 196" ;;
+						2818) model="IBM zEnterprise 114" ;;
+						2827) model="IBM zEnterprise EC12" ;;
+						2828) model="IBM zEnterprise BC12" ;;
+						2964) model="IBM z13" ;;
+						   *) model="IBM S/390 machine type $machine" ;;
+					esac
+				else
+					model="Unknown"
+				fi
+			fi
+			cpu="${model}${cpu}"
+		fi
+		loc="/sys/devices/system/cpu/cpu0/cpufreq"
+		bl="${loc}/bios_limit"
+		smf="${loc}/scaling_max_freq"
+		if [ -f "$bl" ] && [ -r "$bl" ]; then
+			cpu_mhz=$(awk '{print $1/1000}' "$bl")
+		elif [ -f "$smf" ] && [ -r "$smf" ]; then
+			cpu_mhz=$(awk '{print $1/1000}' "$smf")
+		else
+			cpu_mhz=$(awk -F':' '/cpu MHz/{ print int($2+.5) }' /proc/cpuinfo | head -n 1)
+		fi
+		if [ -n "$cpu_mhz" ]; then
+			if [ "${cpu_mhz%.*}" -ge 1000 ]; then
+				cpu_ghz=$(awk '{print $1/1000}' <<< "${cpu_mhz}")
+				cpufreq="${cpu_ghz}GHz"
+			else
+				cpufreq="${cpu_mhz}MHz"
+			fi
+		fi
+	fi
+	if [[ "${cpun}" -gt "1" ]]; then
+		cpun="${cpun}x "
+	else
+		cpun=""
+	fi
+	if [ -z "$cpufreq" ]; then
+		cpu="${cpun}${cpu}"
+	else
+		cpu="$cpu @ ${cpun}${cpufreq}"
+	fi
+	if [ -d '/sys/class/hwmon/' ]; then
+		for dir in /sys/class/hwmon/* ; do
+			hwmonfile=""
+			[ -e "$dir/name" ] && hwmonfile=$dir/name
+			[ -e "$dir/device/name" ] && hwmonfile=$dir/device/name
+			[ -n "$hwmonfile" ] && if grep -q 'coretemp' "$hwmonfile"; then
+				thermal="$dir/temp1_input"
+				break
+			fi
+		done
+		if [ -e "$thermal" ] && [ "${thermal:+isSetToNonNull}" = 'isSetToNonNull' ]; then
+			temperature=$(bc <<< "scale=1; $(cat "$thermal")/1000")
+		fi
+	fi
+	if [ -n "$temperature" ]; then
+		cpu="$cpu [${temperature}°C]"
+	fi
+	cpu=$(sed $REGEXP 's/\([tT][mM]\)|\([Rr]\)|[pP]rocessor|CPU//g' <<< "${cpu}" | xargs)
+}
+# CPU Detection - End
+
+
+#//////////////////////////////////////////////////////////
+
+
+
+#everything here is part of cvn.sh and only is used for renaming files removing characters to join filenames together
+#without spaces or other invalid characters
+#################################################################################################################################
+function replace_space
+{
+#/ used seperately because you can't send an empty string to the function
+#/ it causes errors.
+ls > /tmp/current_files
+mv /tmp/current_files ./current_files
+cat current_files | tr ' ' '_' > current_files_new
+FileCount=$(wc -l current_files | awk '{print $1}')
+rcount=1
+while   [ "$rcount" -le "$FileCount" ]
+do 	ReadAwk="FNR=="$rcount
+	OldName=$(awk $ReadAwk current_files)
+	NewName=$(awk $ReadAwk current_files_new)
+	mv "$OldName" "$NewName" > /dev/null 2>&1
+	rcount=$(($rcount+1))
+done
+rm current_files
+rm current_files_new
+}
+
+#################################################################################################################################
+function replace_dot
+{
+#/this will replace all the "." in a filename including the extention
+#/so we had to create a way to get the original file extention and then
+#/add it back after the dots have been replaced with underscores.
+ls > /tmp/current_files
+mv /tmp/current_files ./current_files
+cat current_files | tr '.' '_' > current_files_new
+FileCount=$(wc -l current_files | awk '{print $1}')
+zcount=1
+while   [ "$zcount" -le "$FileCount" ]
+do 	ReadAwk="FNR=="$zcount
+	OldName=$(awk $ReadAwk current_files)
+	f_ext=${OldName##*.}
+	NewName=$(awk $ReadAwk current_files_new)
+	#/barename removes the extention and last underscore
+	barename=`echo ${NewName} | sed 's/\.[^\.]*$//' | rev | cut -c 5- | rev`
+	mv "$OldName" "$barename.$f_ext" > /dev/null 2>&1
+	zcount=$(($zcount+1))
+done
+rm current_files
+rm current_files_new
+}
+
+#################################################################################################################################
+function replace_character
+{
+# doesn't work for dots or spaces have to call those separetly
+rpchar=$1
+ls > /tmp/current_files
+mv /tmp/current_files ./current_files
+cat current_files | tr $rpchar '_' > current_files_new
+FileCount=$(wc -l current_files | awk '{print $1}')
+pcount=1
+while   [ "$pcount" -le "$FileCount" ]
+do 	ReadAwk="FNR=="$pcount
+	OldName=$(awk $ReadAwk current_files)
+	f_ext=${OldName##*.}
+	NewName=$(awk $ReadAwk current_files_new)
+        mv "$OldName" "$NewName" > /dev/null 2>&1
+	pcount=$(($pcount+1))
+done
+rm current_files
+rm current_files_new
+}
+
+#################################################################################################################################
+function remove_character
+{
+
+rmchar=$1
+for filename in *; do
+    [ -f "$filename" ] || continue
+    mv $filename ${filename//$rmchar/} > /dev/null 2>&1
+done
+
+}
+
+
