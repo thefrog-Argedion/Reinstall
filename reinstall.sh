@@ -113,13 +113,20 @@ elif [[ ${INSTALL_WHERE} = "D" ]] ; then
 sudo pacman -S --needed $(comm -12 <(pacman -Slq | sort) <(sort /run/media/thefrog/Reinstall/bin/sys/Desktop-Packages.txt))
 #<----[ install from the AUR (I use paru) installing from AUR is interactive.
 #<----[  first start with a single package as the initial build environment takes a bit of time to install test and be ready
-sleep 3 #<----[ small break
 #<----[ add custom entries into fstab
 sudo cat /run/media/thefrog/Reinstall/bin/sys/uuid >> /etc/fstab  #<----[ open uuid and fstab to put entries of uuid into fstab since the above command returns error. 
+sleep 3 #<----[ small break
+read -P "Core Packages have been installed. Press key to continue"
 #<----[ Remove folders not needed
 rm -rf ~/Documents
 rm -rf ~/Downloads
 rm -rf ~/Pictures
+#<----[ Create symbolic links to removed folders
+ln -s /home/thefrog/thepad/thefrog/bin /home/thefrog/bin
+ln -s /home/thefrog/thepad/thefrog/Documents /home/thefrog/Documents
+ln -s /home/thefrog/thepad/thefrog/Downloads /home/thefrog/Downloads
+ln -s /home/thefrog/thepad/thefrog/Pictures /home/thefrog/Pictures
+ln -s /home/thefrog/thepad/thefrog/tmp /home/thefrog/tmp
 else
 #<----[ for the time we just have the two systems to install to. The laptop needs differ than the desktop needs.
 #<----[ install packages from package list sorting out all of the aur packages as to not error.
@@ -145,12 +152,7 @@ sudo systemctl enable lightdm.service
 
 
 
-#<----[ Create symbolic links to removed folders
-ln -s /home/thefrog/thepad/thefrog/bin /home/thefrog/bin
-ln -s /home/thefrog/thepad/thefrog/Documents /home/thefrog/Documents
-ln -s /home/thefrog/thepad/thefrog/Downloads /home/thefrog/Downloads
-ln -s /home/thefrog/thepad/thefrog/Pictures /home/thefrog/Pictures
-ln -s /home/thefrog/thepad/thefrog/tmp /home/thefrog/tmp
+
 
 #<----[ Copy config files needed for basic setup
 if [[ ${INSTALL_WHERE} = "D" ]]
