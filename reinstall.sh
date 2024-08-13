@@ -148,12 +148,6 @@ sudo systemctl enable --now userclean.service
 sudo systemctl enable lightdm.service
 #dbus-launch dconf load / < xed.dconf
 
-#<----[ Reset home folder
-
-
-
-
-
 #<----[ Copy config files needed for basic setup
 if [[ ${INSTALL_WHERE} = "D" ]]
 	cp -rv /run/media/thefrog/Reinstall/Desktop/.config $HOME/.config
