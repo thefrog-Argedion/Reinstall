@@ -1,4 +1,11 @@
-Files for the Lenovo (Production)
+Files for the Lenovo (Production) OpenSuse.
 
 create for github
 .config
+
+config conains
+alacritty
+cinnamon 
+cinnamon-session
+conky
+geany
