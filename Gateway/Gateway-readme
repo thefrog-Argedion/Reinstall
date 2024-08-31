@@ -1,1 +1,14 @@
 Files for the Gateway Computer (Radiohead) 
+
+Need to create folders on github for
+.config
+bin
+
+
+.config to contain
+alacritty
+conky
+geany
+openbox
+plank
+
