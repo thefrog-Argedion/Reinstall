@@ -42,15 +42,6 @@ INSTALL_WHERE=$1
 #Script Global Functions                                           #
 ####################################################################
 
-function Script_Display
-{
-
-clear
-echo -e "${TITLEBG}${TITLEFG}${iconcolor}$ {host_icon}${Normal} ${TITLEFG}$HOSTNAME ${Normal}                      ${iconcolor}${texicon}${Normal} ${TITLEFG} Make it Myne                         ${NUMBCOLOR}${version_icon}${Normal}  ${TITLEFG}${SCRIPT_VERSION}  ${Normal}"
-echo -e "${ICONCOLOR}${clock_icon}${Normal}${TXTCOLOR} `date "+%c"`${Normal}"
-echo ""
-echo ${DIVIDER}
-}
 
 function Script_Exit
 {
@@ -106,56 +97,61 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 
 
 #<----[ check to ensure that where to install is chosen. 
-if [[ -z ${INSTALL_WHERE} ]] ; then
-	Script_Help
-elif [[ ${INSTALL_WHERE} = "D" ]] ; then
-#<----[ install packages from package list sorting out all of the aur packages as to not error.
-sudo pacman -S --needed $(comm -12 <(pacman -Slq | sort) <(sort /run/media/thefrog/Reinstall/bin/sys/Desktop-Packages.txt))
-#<----[ install from the AUR (I use paru) installing from AUR is interactive.
-#<----[  first start with a single package as the initial build environment takes a bit of time to install test and be ready
-#<----[ add custom entries into fstab
-sudo cat /run/media/thefrog/Reinstall/bin/sys/uuid >> /etc/fstab  #<----[ open uuid and fstab to put entries of uuid into fstab since the above command returns error. 
-sleep 3 #<----[ small break
-read -P "Core Packages have been installed. Press key to continue"
-#<----[ Remove folders not needed
-rm -rf ~/Documents
-rm -rf ~/Downloads
-rm -rf ~/Pictures
-#<----[ Create symbolic links to removed folders
-ln -s /home/thefrog/thepad/thefrog/bin /home/thefrog/bin
-ln -s /home/thefrog/thepad/thefrog/Documents /home/thefrog/Documents
-ln -s /home/thefrog/thepad/thefrog/Downloads /home/thefrog/Downloads
-ln -s /home/thefrog/thepad/thefrog/Pictures /home/thefrog/Pictures
-ln -s /home/thefrog/thepad/thefrog/tmp /home/thefrog/tmp
-else
-#<----[ for the time we just have the two systems to install to. The laptop needs differ than the desktop needs.
-#<----[ install packages from package list sorting out all of the aur packages as to not error.
-sudo pacman -S --needed $(comm -12 <(pacman -Slq | sort) <(sort /run/media/thefrog/Reinstall/bin/sys/Laptop-Packages.txt))
-	paru -S gksu #<----[  first start with a single package as the initial build environment takes a bit of time to install test and be ready
-	paru -S qpdfview hardinfo2
-fi
-#<----[ No matter which desktop or laptop the remaining are needed for both devices.
+	if [[ ${INSTALL2} = "D" || "d" ]] ; then    #<----[ for the time we just have three systems to install to. All with different needs
+		DESTINATION="Desktop"
+		echo "Install and Setup for Hewlitt Packard"
+		sudo pacman -Syu --needed - < ./Desktop/bin/sys/Packages.txt
+		sudo cat ./Desktop/bin/sys/uuid >> fstab  #<----[ add internal hard drive to fstab
+	elif [[ ${INSTALL2} = "G" || "g" ]] ; then
+		echo "Install and Setup for Gateway"
+		sudo pacman -Syu --needed - < ./Gateway/bin/sys/Packages.txt
+		DESTINATION="Gateway"
+	elif [[ ${INSTALL2} = "L" || "l" ]] ; then
+	#<----[ The Lenovo has Opensuse on it. Not sure what applications i need to install
+	#<----[ Here we just keep the basic dot files 
+		echo "create routines for opensuse"
+		DESTINATION="Lenovo"
+	else
+		echo "Unespected device choosen. Exiting with Error!"
+		err =1
+		Script_Help 
+		
+	fi
+		mkdir -p ~/.config
+		mkdir -p ~/.local
+		mkdir -p ~/.themes
+		mkdir -p ~/bin
+  
+		if [[ ${DESTINATION} = "D" ]] ; then  #<----[ link folders from internal disk
+			ln -s /home/thefrog/thepad/bin /home/thefrog/
+			ln -s /home/thefrog/thepad/Pictures /home/thefrog/ 
+			ln -s /home/thefrog/thepad/Documents /home/thefrog/
+			ln -s /home/thefrog/thepad/Downloads /home/thefrog/
+			ln -s /home/thefrog/thepad/tmp /home/thefrog/
+		else
+			cp -R ./$DESTINATION/bin/* /home/thefrog/bin
+			cp -R ./$DESTINATION/Pictures/* /home/thefrog/Pictures
+		fi 
+  
+		cp -R ./$DESTINATION/.config/* /home/thefrog/.config
+		cp -R ./$DESTINATION/.local/* /home/thefrog/.local		
+		cp -R ./$DESTINATION/.themes/* /home/thefrog/.themes
+		cp ./$DESTINATION/.gtkrc-2.0 /home/thefrog/.gtkrc-2.0
+		cp ./$DESTINATION/.bashrc /home/thefrog/.bashrc
 
-#<----[ bluetooth services under endeavour
-sudo sysemctl enable --now bluetooth
+
+#<----[ start services
+sudo systemctl enable lightdm.service
+sudo systemctl enable bluetooth
 
 #<----[ Install custom service
-sudo cp /run/media/thefrog/Reinstall/bin/services/userclean.service /etc/systemd/system
-sudo cp /run/media/thefrog/Reinstall/bin/services/clean-cacheplus.sh /usr/bin
+sudo cp /home/thefrog/bin/services/userclean.service /etc/systemd/system
+sudo cp /home/thefrog/bin/services/clean-cacheplus.sh /usr/bin
 sudo chmod +x /usr/bin/clean-cacheplus.sh
 sudo systemctl daemon-reload
-sudo systemctl enable --now userclean.service
-sudo systemctl enable lightdm.service
-#dbus-launch dconf load / < xed.dconf
+sudo systemctl enable userclean.service
 
-#<----[ Copy config files needed for basic setup
-if [[ ${INSTALL_WHERE} = "D" ]]
-	cp -rv /run/media/thefrog/Reinstall/Desktop/.config $HOME/.config
-	cp -rv /run/media/thefrog/Reinstall/Desktop/.local $HOME/.local
-else
-	cp -rv /run/media/thefrog/Reinstall/Laptop/.config $HOME/.config
-	cp -rv /run/media/thefrog/Reinstall/Laptop/.local $HOME/.local
-fi
+read -p "Press key to reboot into new environment"
+rm -rf /home/thefrog/$DESTINATION #<----[ toggle with a comment for troubleshooting but remove the install folder after install completes.
+reboot
 
-
-Script_Exit
