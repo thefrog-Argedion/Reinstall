@@ -121,7 +121,7 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 		mkdir -p ~/.themes
 		mkdir -p ~/bin
   
-		if [[ ${DESTINATION} = "D" ]] ; then  #<----[ link folders from internal disk
+		if [[ ${DESTINATION} = "Desktop" ]] ; then  #<----[ link folders from internal disk
 			ln -s /home/thefrog/thepad/bin /home/thefrog/
 			ln -s /home/thefrog/thepad/Pictures /home/thefrog/ 
 			ln -s /home/thefrog/thepad/Documents /home/thefrog/
