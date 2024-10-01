@@ -29,15 +29,16 @@ SCRIPT_VERSION=1.0.4
 # Update September 14 2023
 # added if statement and variable to determine which device is being installed to.
 # added help flag
+#
+# Update September 30 2024
+# added routine for gateway computer cleaned coded added variable DESTINATION 
+# to help with knowing what to do for what system. INSTALL2 is a letter to keep it simple at install time
+# DESTINATION is the same as the corresponding folder. 
+#
 ####################################################################
 #Variables                                                         #
 ####################################################################
-bin_path=/run/media/thefrog/Reinstall/bin
-config_path=$bin_path/etc
-source ${config_path}/colors.config
-source ${config_path}/common.config
-
-INSTALL_WHERE=$1
+INSTALL2=$1
 ####################################################################
 #Script Global Functions                                           #
 ####################################################################
