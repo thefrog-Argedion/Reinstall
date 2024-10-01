@@ -12,7 +12,7 @@
 #/Name:makeitmyne.sh
 #/Description: a setup script
 #/Creation Date: 09 07 2022
-SCRIPT_VERSION=1.0.3
+SCRIPT_VERSION=1.0.4
 
 ####################################################################
 #Dependencies                                                      #
