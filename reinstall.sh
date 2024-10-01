@@ -80,7 +80,7 @@ icount=$( ping -c 1 $target | grep icmp* | wc -l ) > /dev/null 2>&1
 if [[ $icount -eq 0 ]] ; then
     #inform user that net was not found
     echo -e ${ERRCOLOR} ${error_icon}${Normal} ${NO_INTERNET}
-	err_Exit=1
+	err=1
 	Script_Exit
 fi
 
@@ -112,7 +112,7 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 		DESTINATION="Lenovo"
 	else
 		echo "Unespected device choosen. Exiting with Error!"
-		err =1
+		err=1
 		Script_Help 
 		
 	fi
