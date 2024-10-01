@@ -96,16 +96,16 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 
 
 #<----[ check to ensure that where to install is chosen. 
-	if [[ ${INSTALL2} = "D" || "d" ]] ; then    #<----[ for the time we just have three systems to install to. All with different needs
+	if [[ ${INSTALL2} = "D" ]] ; then    #<----[ for the time we just have three systems to install to. All with different needs
 		DESTINATION="Desktop"
 		echo "Install and Setup for Hewlitt Packard"
 		sudo pacman -Syu --needed - < ./Desktop/bin/sys/Packages.txt
 		sudo cat ./Desktop/bin/sys/uuid >> fstab  #<----[ add internal hard drive to fstab
-	elif [[ ${INSTALL2} = "G" || "g" ]] ; then
+	elif [[ ${INSTALL2} = "G" ]] ; then
 		echo "Install and Setup for Gateway"
 		sudo pacman -Syu --needed - < ./Gateway/bin/sys/Packages.txt
 		DESTINATION="Gateway"
-	elif [[ ${INSTALL2} = "L" || "l" ]] ; then
+	elif [[ ${INSTALL2} = "L" ]] ; then
 	#<----[ The Lenovo has Opensuse on it. Not sure what applications i need to install
 	#<----[ Here we just keep the basic dot files 
 		echo "create routines for opensuse"
