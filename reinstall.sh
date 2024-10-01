@@ -47,14 +47,12 @@ INSTALL2=$1
 function Script_Exit
 {
 	
-echo -e ${DIVIDER}
+
     #Decide if Exiting with error
-	if [[ ${err_Exit} != 0 ]] ; then
-		echo -e ${ER_MSG}
-	else
-		echo -e ${GB_MSG}
+	if [[ ${err} != 0 ]] ; then
+		echo "Errors Occurred Unknown Status. Failure."
 	fi
-	unset  
+	unset  INSTALL2 DESTINATION targed MY_IP 
 exit
 }
 
@@ -63,7 +61,7 @@ function Script_Help
 {
 	echo "Reinstall is made to easily setup multiple systems with one script"
 	echo "Usage is as follows"
-	echo "L for Laptop		D for Desktop"
+	echo "L for Laptop     G for Gateway		D for Desktop"
 	echo "example"
 	echo "reinstall.sh D" 
 	Script_Exit
