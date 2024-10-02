@@ -96,48 +96,44 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 
 
 #<----[ check to ensure that where to install is chosen. 
-	if [[ ${INSTALL2} = "D" ]] ; then    #<----[ for the time we just have three systems to install to. All with different needs
-		DESTINATION="Desktop"
-		echo "Install and Setup for Hewlitt Packard"
+	if [[ ${INSTALL2} = "D" || ${INSTALL2} = "d" ]] ; then    #<----[ for the time we just have three systems to install to. All with different needs
+		#<----[ run bash -c as root as sudo byitself does not work with redirection for fstab.
+		sudo bash -c "cat /home/thefrog/Desktop/bin/sys/uuid >> /etc/fstab"  #<----[ edit fstab to include internal drive
 		sudo pacman -Syu --needed - < ./Desktop/bin/sys/Packages.txt
-		sudo cat ./Desktop/bin/sys/uuid >> fstab  #<----[ add internal hard drive to fstab
-	elif [[ ${INSTALL2} = "G" ]] ; then
-		echo "Install and Setup for Gateway"
+		DESTINATION="Desktop"
+	elif [[ ${INSTALL2} = "G" || ${INSTALL2} ="g" ]] ; then
 		sudo pacman -Syu --needed - < ./Gateway/bin/sys/Packages.txt
 		DESTINATION="Gateway"
-	elif [[ ${INSTALL2} = "L" ]] ; then
+	elif [[ ${INSTALL2} = "L" || ${INSTALL2} = "l" ]] ; then
 	#<----[ The Lenovo has Opensuse on it. Not sure what applications i need to install
 	#<----[ Here we just keep the basic dot files 
-		echo "create routines for opensuse"
+		echo "Get off your ass and get this done your making me look bad dude. WTF?"
 		DESTINATION="Lenovo"
 	else
-		echo "Unespected device choosen. Exiting with Error!"
-		err=1
-		Script_Help 
-		
+		echo "Uknown device choosen. Exiting with Error!"
+		exit 1  ## return error
 	fi
+	
 		mkdir -p ~/.config
 		mkdir -p ~/.local
 		mkdir -p ~/.themes
-		mkdir -p ~/bin
+
   
 		if [[ ${DESTINATION} = "Desktop" ]] ; then  #<----[ link folders from internal disk
-			ln -s /home/thefrog/thepad/bin /home/thefrog/
-			ln -s /home/thefrog/thepad/Pictures /home/thefrog/ 
-			ln -s /home/thefrog/thepad/Documents /home/thefrog/
-			ln -s /home/thefrog/thepad/Downloads /home/thefrog/
-			ln -s /home/thefrog/thepad/tmp /home/thefrog/
+			rm -rf /home/thefrog/Documents
+			rm -rf /home/thefrog/Downloads
+			rm -rf /home/thefrog/Pictures
+			ln -s /home/thefrog/thepad/thefrog/bin /home/thefrog/
+			ln -s /home/thefrog/thepad/thefrog/Pictures /home/thefrog/ 
+			ln -s /home/thefrog/thepad/thefrog/Documents /home/thefrog/
+			ln -s /home/thefrog/thepad/thefrog/Downloads /home/thefrog/
+			ln -s /home/thefrog/thepad/thefrog/tmp /home/thefrog/
 		else
+			#<----[ copy files from install location (home folder ideally) download from git hub or copy from disk after install and before reboot.
+			mkdir -p ~/bin
 			cp -R ./$DESTINATION/bin/* /home/thefrog/bin
 			cp -R ./$DESTINATION/Pictures/* /home/thefrog/Pictures
 		fi 
-  
-		cp -R ./$DESTINATION/.config/* /home/thefrog/.config
-		cp -R ./$DESTINATION/.local/* /home/thefrog/.local		
-		cp -R ./$DESTINATION/.themes/* /home/thefrog/.themes
-		cp ./$DESTINATION/.gtkrc-2.0 /home/thefrog/.gtkrc-2.0
-		cp ./$DESTINATION/.bashrc /home/thefrog/.bashrc
-
 
 #<----[ start services
 sudo systemctl enable lightdm.service
