@@ -1,13 +1,13 @@
 #!/bin/bash
 
-###############################
+#######################
 ##### A Frog Bash Script ######
-###############################
-#####        @..@         #####
-#####       (----)        #####
-#####      (>____<)       #####
-#####      ^^~~~~^^       #####
-###############################
+#######################
+#####          @..@             #####
+#####          (----)             #####
+#####       (>____<)         #####
+#####     ^^~~~~^^       #####
+#######################
 #/Name:reinstall.sh
 #/Description: a setup script
 #/Creation Date: 09 07 2022
@@ -36,7 +36,7 @@ SCRIPT_VERSION=1.0.4
 #Variables                                                         #
 ####################################################################
 INSTALL2=$1
-
+INTERNAL="thepad/thefrog"
 ####################################################################
 #/ User added Functions                                            #
 ####################################################################
@@ -63,15 +63,16 @@ if [[ $1 = -h ]] ; then
 fi
 chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 
-	if [[ ${INSTALL2} = "D" || ${INSTALL2} = "d" ]] ; then    #<----[ for the time we just have three systems to install to. All with different needs
-		#<----[ run bash -c as root as sudo byitself does not work with redirection for fstab.
-		sudo bash -c "cat /home/thefrog/Desktop/bin/sys/uuid >> /etc/fstab"  #<----[ edit fstab to include internal drive
-		sudo pacman -Syu --needed - < ./Desktop/bin/sys/Packages.txt
-		DESTINATION="Desktop"
-	elif [[ ${INSTALL2} = "G" || ${INSTALL2} = "g" ]] ; then
-		sudo pacman -Syu --needed - < ./Gateway/bin/sys/Packages.txt
-		DESTINATION="Gateway"
-	elif [[ ${INSTALL2} = "L" || ${INSTALL2} = "l" ]] ; then
+ #<----[ for the time we just have three systems to install to. All with different needs
+	case "${INSTALL2}" in 
+		[Dd])		#<----[ run bash -c as root as sudo byitself does not work with redirection for fstab.
+			sudo bash -c "cat $HOME/Desktop/bin/sys/uuid >> /etc/fstab"  #<----[ edit fstab to include internal drive
+			sudo pacman -Syu --needed - < $HOME/Desktop/bin/sys/Packages.txt
+			DESTINATION="Desktop"
+		[Gg])
+			sudo pacman -Syu --needed - < $HOME/Gateway/bin/sys/Packages.txt
+			DESTINATION="Gateway"
+		[Ll])
 	#<----[ The Lenovo has Opensuse on it. Not sure what applications i need to install
 	#<----[ Here we just keep the basic dot files 
 		echo "Get off your ass and get this done your making me look bad dude. WTF?"
@@ -81,47 +82,47 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 		exit 1  ## return error
 	fi
 	
-		mkdir -p ~/.config
-		mkdir -p ~/.local
-		mkdir -p ~/.themes
+		mkdir -p $HOME/.config
+		mkdir -p $HOME/.local
+		mkdir -p $HOME/.themes
 
   
 		if [[ ${DESTINATION} = "Desktop" ]] ; then  #<----[ link folders from internal disk
-			rm -rf /home/thefrog/Documents
-			rm -rf /home/thefrog/Downloads
-			rm -rf /home/thefrog/Pictures
-			ln -s /home/thefrog/thepad/thefrog/bin /home/thefrog/
-			ln -s /home/thefrog/thepad/thefrog/Pictures /home/thefrog/ 
-			ln -s /home/thefrog/thepad/thefrog/Documents /home/thefrog/
-			ln -s /home/thefrog/thepad/thefrog/Downloads /home/thefrog/
-			ln -s /home/thefrog/thepad/thefrog/tmp /home/thefrog/
+			rm -rf $HOME/Documents
+			rm -rf $HOME/Downloads
+			rm -rf $HOME/Pictures
+			ln -s $HOME/$INTERNAL/bin $HOME/
+			ln -s $HOME/$INTERNAL/Pictures $HOME/ 
+			ln -s $HOME/$INTERNAL/Documents $HOME/
+			ln -s $HOME/$INTERNAL/Downloads $HOME/
+			ln -s $HOME/$INTERNAL/tmp $HOME/
 		else
 			#<----[ copy files from install location (home folder ideally) download from git hub or copy from disk after install and before reboot.
-			mkdir -p /home/thefrog/bin
-			cp -R ./$DESTINATION/bin/* /home/thefrog/bin
-			cp -R ./$DESTINATION/Pictures/* /home/thefrog/Pictures
+			mkdir -p $HOME/bin
+			cp -R ./$DESTINATION/bin/* $HOME/bin
+			cp -R ./$DESTINATION/Pictures/* $HOME/Pictures
 		fi 
 
 #<---[ install the basic files need to have environment the way we want
-		cp -R ./$DESTINATION/.config/* /home/thefrog/.config    
-		cp -R ./$DESTINATION/.local/* /home/thefrog/.local		
-		cp -R ./$DESTINATION/.themes/* /home/thefrog/.themes
-		cp ./$DESTINATION/.gtkrc-2.0 /home/thefrog/.gtkrc-2.0
-		cp ./$DESTINATION/.bashrc /home/thefrog/.bashrc
+		cp -R ./$DESTINATION/.config/* $HOME/.config    
+		cp -R ./$DESTINATION/.local/* $HOME/.local		
+		cp -R ./$DESTINATION/.themes/* $HOME/.themes
+		cp ./$DESTINATION/.gtkrc-2.0 $HOME/.gtkrc-2.0
+		cp ./$DESTINATION/.bashrc $HOME/.bashrc
 		
 #<----[ start services
 sudo systemctl enable lightdm.service
 sudo systemctl enable bluetooth
 
 #<----[ Install custom service
-sudo cp /home/thefrog/$DESTINATION/bin/services/userclean.service /etc/systemd/system
-sudo cp /home/thefrog/$DESTINATION/bin/services/clean-cacheplus.sh /usr/bin
+sudo cp $HOME/$DESTINATION/bin/services/userclean.service /etc/systemd/system
+sudo cp $HOME/$DESTINATION/bin/services/clean-cacheplus.sh /usr/bin
 sudo chmod +x /usr/bin/clean-cacheplus.sh
 sudo systemctl daemon-reload
 sudo systemctl enable userclean.service
 
 read -p "Press key to reboot into new environment"
-rm -rf /home/thefrog/$DESTINATION  #<----[ cleanup after install
+rm -rf $HOME/$DESTINATION  #<----[ cleanup after install
 unset INSTALL2 DESTINATION MY_IP target
 reboot
 exit
