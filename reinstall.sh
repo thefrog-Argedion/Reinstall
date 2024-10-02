@@ -69,18 +69,18 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 			sudo bash -c "cat $HOME/Desktop/bin/sys/uuid >> /etc/fstab"  #<----[ edit fstab to include internal drive
 			sudo pacman -Syu --needed - < $HOME/Desktop/bin/sys/Packages.txt
 			DESTINATION="Desktop"
+			;;
 		[Gg])
 			sudo pacman -Syu --needed - < $HOME/Gateway/bin/sys/Packages.txt
 			DESTINATION="Gateway"
+			;;
 		[Ll])
 	#<----[ The Lenovo has Opensuse on it. Not sure what applications i need to install
 	#<----[ Here we just keep the basic dot files 
 		echo "Get off your ass and get this done your making me look bad dude. WTF?"
 		DESTINATION="Lenovo"
-	else
-		echo "Uknown device choosen. Exiting with Error!"
-		exit 1  ## return error
-	fi
+		;;
+	esac
 	
 		mkdir -p $HOME/.config
 		mkdir -p $HOME/.local
