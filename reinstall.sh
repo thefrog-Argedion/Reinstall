@@ -78,7 +78,7 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 	#<----[ The Lenovo has Opensuse on it. Not sure what applications i need to install
 	#<----[ Here we just keep the basic dot files 
 		echo "Get off your ass and get this done your making me look bad dude. WTF?"
-		DESTINATION="Lenovo"
+		DESTINATION="Lenovo"   #<----[ **look into finding out how to check for error press it should be in my notes somewhere if not search online**
 		;;
 	esac
 	
