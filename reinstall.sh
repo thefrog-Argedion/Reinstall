@@ -1,15 +1,14 @@
 #!/bin/bash
 
-##############################
-##### A Frog Bash Script #####
-##############################
-#####        @..@        #####
-#####       (----)       #####
-#####      (>____<)      #####
-#####      ^^~~~~^^      #####
-##############################
-
-#/Name:makeitmyne.sh
+#######################
+##### A Frog Bash Script ######
+#######################
+#####          @..@             #####
+#####          (----)             #####
+#####       (>____<)         #####
+#####     ^^~~~~^^       #####
+#######################
+#/Name:reinstall.sh
 #/Description: a setup script
 #/Creation Date: 09 07 2022
 SCRIPT_VERSION=1.0.4
@@ -17,9 +16,7 @@ SCRIPT_VERSION=1.0.4
 ####################################################################
 #Dependencies                                                      #
 ####################################################################
-#<----[ pacman paru internet connection
-
-#<----[ optional - alacritty
+#<----[ pacman internet connection
 
 ####################################################################
 #                           Updates                                #
@@ -29,7 +26,7 @@ SCRIPT_VERSION=1.0.4
 # Update September 14 2023
 # added if statement and variable to determine which device is being installed to.
 # added help flag
-#
+
 # Update September 30 2024
 # added routine for gateway computer cleaned coded added variable DESTINATION 
 # to help with knowing what to do for what system. INSTALL2 is a letter to keep it simple at install time
@@ -39,33 +36,6 @@ SCRIPT_VERSION=1.0.4
 #Variables                                                         #
 ####################################################################
 INSTALL2=$1
-####################################################################
-#Script Global Functions                                           #
-####################################################################
-
-
-function Script_Exit
-{
-	
-
-    #Decide if Exiting with error
-	if [[ ${err} != 0 ]] ; then
-		echo "Errors Occurred Unknown Status. Failure."
-	fi
-	unset  INSTALL2 DESTINATION targed MY_IP 
-exit
-}
-
-
-function Script_Help
-{
-	echo "Reinstall is made to easily setup multiple systems with one script"
-	echo "Usage is as follows"
-	echo "L for Laptop     G for Gateway		D for Desktop"
-	echo "example"
-	echo "reinstall.sh D" 
-	Script_Exit
-}
 
 ####################################################################
 #/ User added Functions                                            #
@@ -79,9 +49,8 @@ target=$MY_IP
 icount=$( ping -c 1 $target | grep icmp* | wc -l ) > /dev/null 2>&1
 if [[ $icount -eq 0 ]] ; then
     #inform user that net was not found
-    echo -e ${ERRCOLOR} ${error_icon}${Normal} ${NO_INTERNET}
-	err=1
-	Script_Exit
+    echo "WARNING WARNING The outside world has been rejected :D "
+	exit 1
 fi
 
 }
@@ -94,14 +63,12 @@ if [[ $1 = -h ]] ; then
 fi
 chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 
-
-#<----[ check to ensure that where to install is chosen. 
 	if [[ ${INSTALL2} = "D" || ${INSTALL2} = "d" ]] ; then    #<----[ for the time we just have three systems to install to. All with different needs
 		#<----[ run bash -c as root as sudo byitself does not work with redirection for fstab.
 		sudo bash -c "cat /home/thefrog/Desktop/bin/sys/uuid >> /etc/fstab"  #<----[ edit fstab to include internal drive
 		sudo pacman -Syu --needed - < ./Desktop/bin/sys/Packages.txt
 		DESTINATION="Desktop"
-	elif [[ ${INSTALL2} = "G" || ${INSTALL2} ="g" ]] ; then
+	elif [[ ${INSTALL2} = "G" || ${INSTALL2} = "g" ]] ; then
 		sudo pacman -Syu --needed - < ./Gateway/bin/sys/Packages.txt
 		DESTINATION="Gateway"
 	elif [[ ${INSTALL2} = "L" || ${INSTALL2} = "l" ]] ; then
@@ -130,23 +97,31 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 			ln -s /home/thefrog/thepad/thefrog/tmp /home/thefrog/
 		else
 			#<----[ copy files from install location (home folder ideally) download from git hub or copy from disk after install and before reboot.
-			mkdir -p ~/bin
+			mkdir -p /home/thefrog/bin
 			cp -R ./$DESTINATION/bin/* /home/thefrog/bin
 			cp -R ./$DESTINATION/Pictures/* /home/thefrog/Pictures
 		fi 
 
+#<---[ install the basic files need to have environment the way we want
+		cp -R ./$DESTINATION/.config/* /home/thefrog/.config    
+		cp -R ./$DESTINATION/.local/* /home/thefrog/.local		
+		cp -R ./$DESTINATION/.themes/* /home/thefrog/.themes
+		cp ./$DESTINATION/.gtkrc-2.0 /home/thefrog/.gtkrc-2.0
+		cp ./$DESTINATION/.bashrc /home/thefrog/.bashrc
+		
 #<----[ start services
 sudo systemctl enable lightdm.service
 sudo systemctl enable bluetooth
 
 #<----[ Install custom service
-sudo cp /home/thefrog/bin/services/userclean.service /etc/systemd/system
-sudo cp /home/thefrog/bin/services/clean-cacheplus.sh /usr/bin
+sudo cp /home/thefrog/$DESTINATION/bin/services/userclean.service /etc/systemd/system
+sudo cp /home/thefrog/$DESTINATION/bin/services/clean-cacheplus.sh /usr/bin
 sudo chmod +x /usr/bin/clean-cacheplus.sh
 sudo systemctl daemon-reload
 sudo systemctl enable userclean.service
 
 read -p "Press key to reboot into new environment"
-rm -rf /home/thefrog/$DESTINATION #<----[ toggle with a comment for troubleshooting but remove the install folder after install completes.
+rm -rf /home/thefrog/$DESTINATION  #<----[ cleanup after install
+unset INSTALL2 DESTINATION MY_IP target
 reboot
-
+exit
