@@ -1,11 +1,3 @@
-Files for the Lenovo (Production) OpenSuse.
-
-create for github
-.config
-
-config conains
-alacritty
-cinnamon 
-cinnamon-session
-conky
-geany
+Removed OpenSuse do to driver issues with my Nvidia card. Just kept having issues and got tired of always hunting and trying fixes
+Will need to setup for my studio system complete with OBS and KDE NLive. 
+Will probably reset with XFCE as I tend to like it better than the other DE's
