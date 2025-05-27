@@ -37,6 +37,8 @@ SCRIPT_VERSION=1.0.4
 ####################################################################
 INSTALL2=$1
 INTERNAL="/.local/mnt/thepad"
+VIDEO_DRIVE="/.local/mnt/Videos" #<----[ external video drive that is part of fstab for the desktop
+MUSIC_DRIVE="/.local/mnt/Music"  #<----[ internal music drive for the gateway (radiohead) laptop
 ####################################################################
 #/ User added Functions                                            #
 ####################################################################
@@ -62,7 +64,7 @@ if [[ $1 = -h ]] ; then
 	Script_Help
 fi
 chk_NET_STATUS #<----[ make sure we are on line before trying to run script
-
+mkdir -p $HOME/.local/mnt #<----[ create the mount folder Needed for 2 of the 3 systems I have currently. 
  #<----[ for the time we just have three systems to install to. All with different needs
 	case "${INSTALL2}" in 
 		[Dd])		#<----[ run bash -c as root as sudo byitself does not work with redirection for fstab.
@@ -95,6 +97,7 @@ chk_NET_STATUS #<----[ make sure we are on line before trying to run script
 			ln -s $HOME/$INTERNAL/Documents $HOME/
 			ln -s $HOME/$INTERNAL/Downloads $HOME/
 			ln -s $HOME/$INTERNAL/tmp $HOME/
+   			ln -s $HOME/$VIDEO_DRIVE $HOME/
 		else
 			#<----[ copy files from install location (home folder ideally) download from git hub or copy from disk after install and before reboot.
 			mkdir -p $HOME/bin
