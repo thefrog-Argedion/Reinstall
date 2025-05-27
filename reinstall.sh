@@ -11,7 +11,7 @@
 #/Name:reinstall.sh
 #/Description: a setup script
 #/Creation Date: 09 07 2022
-SCRIPT_VERSION=1.0.4
+SCRIPT_VERSION=1.0.5
 
 ####################################################################
 #Dependencies                                                      #
